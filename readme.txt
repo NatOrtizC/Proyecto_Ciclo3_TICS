@@ -1,1 +1,1 @@
-En está rama se subirá la base de datos realizada por Oliver en compañía de Diana.
+Esta rama está destinada para subir la base de datos realizada por el compañero Edwin y con posibles cambios realizados por los otros compañeros del grupo.

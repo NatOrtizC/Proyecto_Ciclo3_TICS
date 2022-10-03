@@ -8,7 +8,7 @@ $(document).ready(function () {
 
         $("#user-saldo").html("$" + user.saldo.toFixed());
 
-        getAlquiladas(user.username);
+        getRegistradas(user.username);
     });
 
     $("#reservar-btn").attr("href", `home.html?username=${username}`);
@@ -57,13 +57,13 @@ async function fillUsuario() {
     });
 }
 
-function getAlquiladas(username) {
+function getRegistradas(username) {
 
 
     $.ajax({
         type: "GET",
         dataType: "html",
-        url: "./ServletAlquilerListar",
+        url: "./ServletRegistroListar",
         data: $.param({
             username: username
         }),
@@ -81,23 +81,18 @@ function getAlquiladas(username) {
     });
 }
 
-function mostrarHistorial(peliculas) {
+function mostrarHistorial(producto) {
     let contenido = "";
-    if (peliculas.length >= 1) {
-        $.each(peliculas, function (index, pelicula) {
-            pelicula = JSON.parse(pelicula);
+    if (producto.length >= 1) {
+        $.each(producto, function (index, producto) {
+            producto = JSON.parse(producto);
 
-            contenido += '<tr><th scope="row">' + pelicula.id + '</th>' +
-                    '<td>' + pelicula.titulo + '</td>' +
-                    '<td>' + pelicula.genero + '</td>' +
-                    '<td><input type="checkbox" name="novedad" id="novedad' + pelicula.id
-                    + '" disabled ';
-            if (pelicula.novedad) {
-                contenido += 'checked'
-            }
-            contenido += '></td><td>' + pelicula.fechaAlquiler + '</td>' +
-                    '<td><button id="devolver-btn" onclick= "devolverpelicula(' + pelicula.id
-                    + ');" class="btn btn-danger">Devolver pelicula</button></td></tr>';
+            contenido += '<tr><th scope="row">' + producto.id + '</th>' +
+                    '<td>' + producto.nombre + '</td>' +
+                    '<td>' + producto.fecha + '</td>' +
+                    '<td>' + producto.proveedor + '</td>' +                   
+                    '<td><button id="devolver-btn" onclick= "devolverProducto(' + producto.id
+                    + ');" class="btn btn-danger">Devolver producto</button></td></tr>';
 
         });
         $("#historial-tbody").html(contenido);
@@ -111,12 +106,12 @@ function mostrarHistorial(peliculas) {
 }
 
 
-function devolverPelicula(id) {
+function devolverProducto(id) {
 
     $.ajax({
         type: "GET",
         dataType: "html",
-        url: "./ServletPeliculaDevolver",
+        url: "./ServletProductoDevolver",
         data: $.param({
             username: username,
             id: id,
@@ -128,7 +123,7 @@ function devolverPelicula(id) {
                 location.reload();
 
             } else {
-                console.log("Error devolviendo el Pelicula");
+                console.log("Error devolviendo el producto");
             }
         }
     });

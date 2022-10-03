@@ -8,14 +8,14 @@ $(document).ready(function () {
     });
 
     getUsuario().then(function () {
-        
-        $("#mi-perfil-btn").attr("href","profile.html?username=" + username);
-        
 
+        $("#mi-perfil-btn").attr("href", "profile.html?username=" + username);
+
+        $("#user-saldo").html(user.saldo.toFixed(2) + "$");
 
         getProducto(false, "ASC");
 
-        $("#ordenar-genero").click(ordenarProducto);
+        $("#ordenar-proveedor").click(ordenarProducto);
     });
 });
 
@@ -46,7 +46,7 @@ function getProducto(ordenar, orden) {
     $.ajax({
         type: "GET",
         dataType: "html",
-        url: "./ServletProductolaListar",
+        url: "./ServletProductoListar",
         data: $.param({
             ordenar: ordenar,
             orden: orden
@@ -55,53 +55,76 @@ function getProducto(ordenar, orden) {
             let parsedResult = JSON.parse(result);
 
             if (parsedResult != false) {
-                mostrarProducto(parsedResult);
+                mostrarProductos(parsedResult);
             } else {
-                console.log("Error recuperando los datos de las peliculas");
+                console.log("Error recuperando los datos de los productos");
             }
         }
     });
 }
-function mostrarProducto(producto) {
+
+function mostrarProductos(producto) {
 
     let contenido = "";
 
     $.each(producto, function (index, producto) {
 
         producto = JSON.parse(producto);
- 
-            contenido += '<tr><th scope="row">' + producto.id + '</th>' +                   
+        let precio;
+
+        if (producto.volumen > 0) {
+
+            if (user.premium) {
+                precio = (2 - (2 * 0.1));
+            } else {
+                precio = 2;
+            }
+
+            contenido += '<tr><th scope="row">' + producto.id + '</th>' +
                     '<td>' + producto.nombre + '</td>' +
                     '<td>' + producto.tipo + '</td>' +
                     '<td>' + producto.proveedor + '</td>' +
                     '<td>' + producto.volumen + '</td>' +
-                    '<td>' + producto.tiempo + '</td>'                                    
-        });
-    $("#peliculas-tbody").html(contenido);
+                    '<td>' + producto.tiempo + '</td>' +
+                    '<td><img src="' + producto.imagen + '" class="card-img-top"></td>'+
+                    '<td>' + producto.descripcion + '</td>' +
+                    '<td>' + precio + '</td>' +
+                    '<td><button onclick="registrarProducto(' + producto.id + ',' + precio + ');" class="btn btn-success" ';
+            if (user.saldo < precio) {
+                contenido += ' disabled ';
+            }
+
+            contenido += '>Registrar</button></td></tr>'
+
+        }
+    });
+    $("#productos-tbody").html(contenido);
 }
+
 
 function ordenarProducto() {
 
     if ($("#icono-ordenar").hasClass("fa-sort")) {
-        getProducto(true, "ASC");
+        getPeliculas(true, "ASC");
         $("#icono-ordenar").removeClass("fa-sort");
         $("#icono-ordenar").addClass("fa-sort-down");
     } else if ($("#icono-ordenar").hasClass("fa-sort-down")) {
-        getProducto(true, "DESC");
+        getPeliculas(true, "DESC");
         $("#icono-ordenar").removeClass("fa-sort-down");
         $("#icono-ordenar").addClass("fa-sort-up");
     } else if ($("#icono-ordenar").hasClass("fa-sort-up")) {
-        getProducto(false, "ASC");
+        getPeliculas(false, "ASC");
         $("#icono-ordenar").removeClass("fa-sort-up");
         $("#icono-ordenar").addClass("fa-sort");
     }
 }
-function alquilarProducto(id) {
+
+function registrarProducto(id, precio) {
 
     $.ajax({
         type: "GET",
         dataType: "html",
-        url: "./ServletPeliculaAlquilar",
+        url: "./ServletProductoRegistrar",
         data: $.param({
             id: id,
             username: username
@@ -115,12 +138,11 @@ function alquilarProducto(id) {
                     location.reload();
                 })
             } else {
-                console.log("Error en la reserva de la película");
+                console.log("Error al registrar el producto");
             }
         }
     });
 }
-
 
 async function restarDinero(precio) {
 
@@ -130,14 +152,14 @@ async function restarDinero(precio) {
         url: "./ServletUsuarioRestarDinero",
         data: $.param({
             username: username,
-
+            saldo: parseFloat(user.saldo - precio)
 
         }),
         success: function (result) {
             let parsedResult = JSON.parse(result);
 
             if (parsedResult != false) {
-
+                console.log("Saldo actualizado");
             } else {
                 console.log("Error en el proceso de pago");
             }

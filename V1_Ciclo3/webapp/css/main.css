@@ -1,0 +1,52 @@
+#main-menu{
+	
+	left:unset;
+	right: 0;
+}
+
+.div-1{
+    background: rgb(91,35,167) !important;
+    background: linear-gradient(202deg, rgba(91,35,167,1) 0%,
+        rgba(112,65,176,1) 35%, rgba(0,212,255,1) 100%) !important;
+}
+
+.div-2{
+    background: rgb(238,174,202) !important;
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%,
+        rgba(148,187,233,1) 100%)!important;
+}
+
+.Sombra{
+    text-shadow: 0.04em 0.02em 0.04em #CBC9C9 !important;
+}
+
+.somColor{
+    background: #E7EDF1;
+}
+
+.content {
+	width: 100%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+	text-align:center;
+}
+
+.bg-login-image{
+	background: url("../img/ciberseguridad-empresasjpg.webp");
+	background-position: center;
+	background-size: cover;
+	border: 0px;
+}
+
+.sizeDiv{
+	width:40vw;
+}
+
+#ordenar-genero{
+	cursor:pointer;
+}
+
+#form-container{
+	width:40vw;
+}
